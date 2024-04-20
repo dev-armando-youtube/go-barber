@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Roboto_Slab } from "next/font/google";
 import "./globals.css";
+import { cn } from "./_libs/utils";
 
 const roboto = Roboto_Slab({ subsets: ["latin"] });
 
@@ -16,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={roboto.className}>{children}</body>
+      <body className={cn("bg-background text-white",roboto.className)}>{children}</body>
     </html>
   );
 }

@@ -1,9 +1,13 @@
 "use client";
 
-import { Calendar, CalendarBlank, Clock, Timer } from "@phosphor-icons/react";
 import Image from "next/image";
+import { api } from "@/api";
+import { BarberItem } from "./_components/barber-item";
+import { ReservationItem } from "./_components/reservation-item";
 
 export default function Home() {
+  const { barbers, reservations } = api;
+
   return (
     <main className="bg-background min-h-screen">
       <header className="h-32 bg-background-medium flex items-center justify-between p-6">
@@ -21,37 +25,21 @@ export default function Home() {
         />
       </header>
 
+      <section className="p-6 pb-0 flex flex-col gap-4">
+        <h4 className="text-2xl py-2">Agendamentos</h4>
+        <div className="flex flex-col gap-5">
+          {reservations.map((reservation) => (
+            <ReservationItem key={reservation.id} {...reservation} />
+          ))}
+        </div>
+      </section>
+
       <section className="p-6 flex flex-col gap-4">
         <h4 className="text-2xl py-2">Barbearias</h4>
         <div className="flex flex-col gap-5">
-          <div className="flex items-center justify-between gap-6 bg-shape p-3 rounded-lg">
-            <Image src="/1.png" alt="" height={72} width={72} />
-            <div className="flex-1 flex flex-col gap-1">
-              <span className="font-medium">Barber</span>
-              <div className="flex gap-2 items-center">
-                <CalendarBlank size={14} className="text-orange" />
-                <span className="text-gray text-sm">Segunda à sexta</span>
-              </div>
-              <div className="flex gap-2 items-center">
-                <Clock size={14} className="text-orange" />
-                <span className="text-gray text-sm">8h às 18h</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center justify-between gap-6 bg-shape p-3 rounded-lg">
-            <Image src="/2.png" alt="" height={72} width={72} />
-            <div className="flex-1 flex flex-col gap-1">
-              <span className="font-medium">Barber Shop</span>
-              <div className="flex gap-2 items-center">
-                <CalendarBlank size={14} className="text-orange" />
-                <span className="text-gray text-sm">Segunda à sexta</span>
-              </div>
-              <div className="flex gap-2 items-center">
-                <Clock size={14} className="text-orange" />
-                <span className="text-gray text-sm">8h às 18h</span>
-              </div>
-            </div>
-          </div>
+          {barbers.map((barber) => (
+            <BarberItem key={barber.id} {...barber} />
+          ))}
         </div>
       </section>
     </main>
