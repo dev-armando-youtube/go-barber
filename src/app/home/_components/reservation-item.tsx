@@ -23,6 +23,7 @@ interface Props {
   image: string;
   service: string;
   payment: string;
+  setReservationCancel: (value: boolean) => void;
 }
 export function ReservationItem({
   name,
@@ -31,6 +32,7 @@ export function ReservationItem({
   image,
   service,
   payment,
+  setReservationCancel,
 }: Props) {
   return (
     <Drawer>
@@ -60,7 +62,7 @@ export function ReservationItem({
       </DrawerTrigger>
       <DrawerContent>
         <header className="p-5 flex items-center justify-between">
-          <span className="font-bold text-lg">Informacões da Reserva</span>
+          <span className="font-bold text-lg">Informações da Reserva</span>
           <DrawerClose className="bg-transparent shadow-none hover:bg-transparent p-2">
             <X size={20} />
           </DrawerClose>
@@ -91,7 +93,10 @@ export function ReservationItem({
           </div>
 
           <div className="pt-5">
-            <Button className="bg-error hover:bg-error/80 w-full">
+            <Button
+              onClick={() => setReservationCancel(true)}
+              className="bg-error hover:bg-error/80 w-full"
+            >
               Cancelar
             </Button>
           </div>

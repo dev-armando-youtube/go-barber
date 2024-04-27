@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  USER
+  BARBER
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verificationtokens")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  type          UserType?
+
+  accounts     Account[]
+  sessions     Session[]
+  barbers      Barber[]
+  reservations Reservation[]
+
+  @@map("users")
+}
+
+model Barber {
+  id        String @id @default(cuid())
+  name      String
+  image     String
+  openDays  String
+  openHours String
+  status    String
+  userId    String @map("user_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  services     Service[]
+  reservations Reservation[]
+
+  @@map("barbers")
+}
+
+model Service {
+  id       String @id @default(cuid())
+  name     String
+  barberId String @map("barber_id")
+
+  barber Barber @relation(fields: [barberId], references: [id], onDelete: Cascade)
+
+  reservations Reservation[]
+
+  @@map("services")
+}
+
+enum StatusReservation {
+  CANCEL
+  FINISH
+}
+
+model Reservation {
+  id          String @id @default(cuid())
+  date        String
+  payment     String
+  description String
+
+  status StatusReservation
+
+  userId    String @map("user_id")
+  barberId  String @map("barber_id")
+  serviceId String @map("service_id")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  barber  Barber  @relation(fields: [barberId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@map("reservations")
+}
