@@ -17,7 +17,11 @@ export default function Login() {
   console.log(session);
 
   if (session?.user) navigate.push("/home");
-  else navigate.push("/login");
+  else {
+    setTimeout(() => {
+      navigate.push("/login");
+    }, 3000);
+  }
 
   return (
     <main className="bg-background min-h-screen flex flex-col items-center justify-center gap-8">
