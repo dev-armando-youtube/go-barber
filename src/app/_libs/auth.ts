@@ -13,16 +13,25 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
-    session({ session, user }) {
-      session.user = { ...session.user, id: user.id } as {
-        id: string,
-        name: string,
-        email: string
+    async session({ session, user }) {
+      const existingUser = await db.user.findUnique({
+        where: { email: user.email ?? "" },
+      });
+
+      if (existingUser) {
+        session.user = {
+          ...session.user,
+          id: user.id,
+          type: existingUser.type
+        } as {
+          id: string,
+          name: string,
+          email: string,
+          type: string
+        };
       }
 
-      console.log(session);
-
-      return session
+      return session;
     }
   },
   secret: process.env.NEXTAUTH_SECRET
