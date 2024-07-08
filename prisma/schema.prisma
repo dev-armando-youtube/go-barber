@@ -68,13 +68,11 @@ model User {
 }
 
 model Barber {
-  id        String @id @default(cuid())
-  name      String
-  image     String
+  id        String  @id @default(cuid())
   openDays  String
   openHours String
-  status    String
-  userId    String @map("user_id")
+  status    Boolean @default(false)
+  userId    String  @unique @map("user_id")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

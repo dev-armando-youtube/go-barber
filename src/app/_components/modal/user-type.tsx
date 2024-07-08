@@ -11,6 +11,25 @@ interface Props {
 export function UserType({ open, setOpen }: Props) {
   const [type, setType] = useState<"USER" | "BARBER">("USER");
 
+  async function handleUserType(type: "USER" | "BARBER") {
+    const res = await fetch("/api/users/set-type", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ type }),
+    });
+
+    if (res.ok) {
+      setType(type);
+      setOpen(false);
+      alert("User type updated successfully!");
+    } else {
+      const data = await res.json();
+      alert(`Failed to update user type: ${data.message}`);
+    }
+  }
+
   return (
     <AlertDialog open={open} onOpenChange={() => setOpen(!open)}>
       <AlertDialogContent className="w-fit flex flex-col items-center rounded-lg">
@@ -24,7 +43,7 @@ export function UserType({ open, setOpen }: Props) {
         <div className="flex items-center justify-center gap-2 w-full">
           <div className="flex items-center gap-8 text-gray">
             <button
-              onClick={() => setType("USER")}
+              onClick={() => handleUserType("USER")}
               className={`${
                 type == "USER" && "text-white border-b"
               } hover:text-white border-orange hover:border-b transition-all duration-300 p-1`}
@@ -32,7 +51,7 @@ export function UserType({ open, setOpen }: Props) {
               Sou cliente
             </button>
             <button
-              onClick={() => setType("BARBER")}
+              onClick={() => handleUserType("BARBER")}
               className={`${
                 type == "BARBER" && "text-white border-b"
               } hover:text-white border-orange hover:border-b transition-all duration-300 p-1`}
